@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import { ModalsProvider } from '@mantine/modals';
 import ReactDOM from 'react-dom/client';
 import { Content } from './content/content';
+import { ContentContextProvider } from './content/content-context';
 import { Header } from './header/header';
 import { KeyContextProvider } from './key/key-context';
 import { theme } from './theme';
@@ -15,10 +16,12 @@ export const App = () => {
   return (
     <MantineProvider theme={theme}>
       <KeyContextProvider>
-        <ModalsProvider>
-          <Header />
-          <Content />
-        </ModalsProvider>
+        <ContentContextProvider>
+          <ModalsProvider>
+            <Header />
+            <Content />
+          </ModalsProvider>
+        </ContentContextProvider>
       </KeyContextProvider>
     </MantineProvider>
   );
