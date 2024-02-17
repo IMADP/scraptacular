@@ -1,13 +1,11 @@
 import { Button } from '@mantine/core';
+import { useKey } from '../key/key-context';
 
-export interface Props {
-  disabled: boolean;
-}
-
-export const LoadButton = ({ disabled }: Props) => {
+export const LoadButton = () => {
+  const keyContext = useKey();
 
   return (
-    <Button disabled={disabled} variant="default">Load</Button>
+    <Button disabled={!keyContext.hasKey} variant="default">Load</Button>
   );
 
 }
