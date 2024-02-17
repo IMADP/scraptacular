@@ -1,9 +1,9 @@
 import { Container, Group } from '@mantine/core';
 import { KeyButton } from '../key/key-button';
-import { ClearButton } from './button-clear';
-import { LoadButton } from './button-load';
-import { SaveButton } from './button-save';
+import { ClearButton } from './clear-button';
 import classes from './header.module.css';
+import { LoadButton } from './load-button';
+import { SaveButton } from './save-button';
 
 export const Header = () => {
   return (

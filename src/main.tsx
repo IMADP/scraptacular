@@ -2,8 +2,8 @@ import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { ModalsProvider } from '@mantine/modals';
 import ReactDOM from 'react-dom/client';
-import { Content } from './app/content';
-import { Header } from './app/header';
+import { Content } from './content/content';
+import { Header } from './header/header';
 import { KeyContextProvider } from './key/key-context';
 import { theme } from './theme';
 
