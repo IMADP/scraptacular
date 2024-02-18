@@ -8,13 +8,18 @@ export const CopyButton = () => {
   const contentContext = useContent();
   const { copy } = useClipboard();
 
-  const onCopy = () => {
+  const onClick = () => {
     copy(contentContext.content);
     contentContext.setContent('');
   }
 
   return (
-    <Button disabled={!keyContext.hasKey} onClick={onCopy} variant="default">Copy</Button>
+    <Button
+      disabled={!keyContext.hasKey}
+      onClick={onClick}
+      variant="default">
+      Copy
+    </Button>
   );
 
 }

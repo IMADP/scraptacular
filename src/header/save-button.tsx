@@ -7,7 +7,14 @@ export const SaveButton = () => {
   const { error, isLoading, saveContent } = useSaveContent();
 
   return (
-    <Button disabled={!keyContext.hasKey} loading={isLoading} onClick={() => saveContent()} variant="default">Save</Button>
+    <Button
+      loading={isLoading}
+      disabled={!keyContext.hasKey}
+      color={error ? 'red' : ''}
+      variant={error ? 'outline' : 'default'}
+      onClick={() => saveContent()}>
+      Save
+    </Button>
   );
 
 }

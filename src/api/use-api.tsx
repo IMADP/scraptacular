@@ -8,7 +8,7 @@ import { useCallback, useState } from "react";
 export interface GetContentType {
   error: AxiosError | null;
   isLoading: boolean;
-  getContent: (url: string) => Promise<void>;
+  getContent: () => Promise<void>;
 }
 
 export const useGetContent = (): GetContentType => {
@@ -18,10 +18,11 @@ export const useGetContent = (): GetContentType => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getContent = useCallback(async (): Promise<void> => {
+    setError(null);
     setIsLoading(true);
 
     try {
-      const response = await axios.get<string>("/s3");
+      const response = await axios.get<string>("///");
       const encrypted = response.data;
       const compressed = decryptText(encrypted, keyContext.key.password);
       const content = decompressText(compressed);
@@ -29,12 +30,13 @@ export const useGetContent = (): GetContentType => {
       setError(null);
     }
     catch (err) {
-      setError(err as AxiosError);
       console.log(err);
+      setError(err as AxiosError);
     }
     finally {
       setIsLoading(false);
     }
+
   }, [keyContext, contentContext]);
 
   return { error, isLoading, getContent };
@@ -53,18 +55,21 @@ export const useSaveContent = (): SaveContentType => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const saveContent = useCallback(async (): Promise<void> => {
+    setError(null);
     setIsLoading(true);
+
     try {
       const compressed = compressText(contentContext.content);
       const encrypted = encryptText(compressed, keyContext.key.password);
       await axios.post("/s3", encrypted);
       setError(null);
     } catch (err) {
-      setError(err as AxiosError);
       console.log(err);
+      setError(err as AxiosError);
     } finally {
       setIsLoading(false);
     }
+
   }, [keyContext, contentContext]);
 
   return { error, isLoading, saveContent };
@@ -86,6 +91,13 @@ const decompressText = (compressed: string) => {
 
 const encryptText = (unencrypted: string, password: string) => {
   return CryptoJS.AES.encrypt(unencrypted, password).toString();
+}
+
+const encryptTextDeterministic = (unencrypted: string, password: string) => {
+  // this isn't really secure but we just want to encrypt the name deterministically
+  const fixedIv = CryptoJS.enc.Utf8.parse('hH05^8OTbyL');
+  const key = CryptoJS.PBKDF2(password, CryptoJS.enc.Utf8.parse('y26a6jh!JML'), { keySize: 256 / 32, iterations: 1000 });
+  return CryptoJS.AES.encrypt(unencrypted, key, { iv: fixedIv, mode: CryptoJS.mode.CBC }).toString();
 }
 
 const decryptText = (encrypted: string, password: string) => {

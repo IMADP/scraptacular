@@ -7,7 +7,14 @@ export const LoadButton = () => {
   const { error, isLoading, getContent } = useGetContent();
 
   return (
-    <Button disabled={!keyContext.hasKey} loading={isLoading} onClick={() => getContent} variant="default">Load</Button>
+    <Button
+      loading={isLoading}
+      disabled={!keyContext.hasKey}
+      color={error ? 'red' : ''}
+      variant={error ? 'outline' : 'default'}
+      onClick={() => getContent()} >
+      Load
+    </Button>
   );
 
 }

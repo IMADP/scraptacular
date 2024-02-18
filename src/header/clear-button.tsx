@@ -6,8 +6,17 @@ export const ClearButton = () => {
   const keyContext = useKey();
   const contentContext = useContent();
 
+  const onClick = () => {
+    contentContext.setContent('');
+  }
+
   return (
-    <Button disabled={!keyContext.hasKey} onClick={() => contentContext.setContent('')} variant="default">Clear</Button>
+    <Button
+      disabled={!keyContext.hasKey}
+      onClick={onClick}
+      variant="default">
+      Clear
+    </Button>
   );
 
 }
