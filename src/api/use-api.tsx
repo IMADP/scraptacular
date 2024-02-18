@@ -5,23 +5,23 @@ import { useKey } from 'key/key-context';
 import pako from 'pako';
 import { useCallback, useState } from "react";
 
-export interface GetContentResponse {
+export interface GetContentType {
   error: AxiosError | null;
   isLoading: boolean;
   getContent: (url: string) => Promise<void>;
 }
 
-export const useGetContent = (): GetContentResponse => {
+export const useGetContent = (): GetContentType => {
   const keyContext = useKey();
   const contentContext = useContent();
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getContent = useCallback(async (url: string): Promise<void> => {
+  const getContent = useCallback(async (): Promise<void> => {
     setIsLoading(true);
 
     try {
-      const response = await axios.get<string>(url);
+      const response = await axios.get<string>("/s3");
       const encrypted = response.data;
       const compressed = decryptText(encrypted, keyContext.key.password);
       const content = decompressText(compressed);
@@ -35,18 +35,18 @@ export const useGetContent = (): GetContentResponse => {
     finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [keyContext, contentContext]);
 
   return { error, isLoading, getContent };
 }
 
-export interface SaveContentResponse {
+export interface SaveContentType {
   error: AxiosError | null;
   isLoading: boolean;
   saveContent: () => Promise<void>;
 }
 
-export const useSaveContent = (): SaveContentResponse => {
+export const useSaveContent = (): SaveContentType => {
   const keyContext = useKey();
   const contentContext = useContent();
   const [error, setError] = useState<AxiosError | null>(null);
@@ -65,7 +65,7 @@ export const useSaveContent = (): SaveContentResponse => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [keyContext, contentContext]);
 
   return { error, isLoading, saveContent };
 }
@@ -73,7 +73,8 @@ export const useSaveContent = (): SaveContentResponse => {
 const compressText = (uncompressed: string) => {
   const textBytes = new TextEncoder().encode(uncompressed);
   const compressed = pako.deflate(textBytes);
-  return Buffer.from(compressed).toString('base64');
+  const binaryString = compressed.reduce((acc: string, byte: number) => acc + String.fromCharCode(byte), '');
+  return btoa(binaryString);
 };
 
 const decompressText = (compressed: string) => {
