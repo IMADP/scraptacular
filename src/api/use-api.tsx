@@ -23,7 +23,7 @@ export const useGetContent = (): GetContentType => {
 
     try {
       const name = encryptTextDeterministic(keyContext.key.name, keyContext.key.password);
-      const response = await axios.post("https://hgw77fedca.execute-api.us-east-1.amazonaws.com/default/getS3File", { name });
+      const response = await axios.post(import.meta.env.VITE_S3_GET_URL, { name });
       const getS3Url = response.data.url;
 
       const s3Response = await axios.get(getS3Url);
@@ -64,7 +64,7 @@ export const useSaveContent = (): SaveContentType => {
 
     try {
       const name = encryptTextDeterministic(keyContext.key.name, keyContext.key.password);
-      const response = await axios.post("https://uuyfng1frf.execute-api.us-east-1.amazonaws.com/default/putS3File", { name });
+      const response = await axios.post(import.meta.env.VITE_S3_PUT_URL, { name });
       const addS3Url = response.data.url;
 
       const compressed = compressText(contentContext.content);
