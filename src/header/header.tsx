@@ -1,10 +1,10 @@
 import { Container, Divider, Group } from '@mantine/core';
 import { KeyButton } from '../key/key-button';
-import { ClearButton } from './clear-button';
-import { CutButton } from './cut-button';
+import { ClearButton } from './header-button-clear';
+import { CutButton } from './header-button-cut';
+import { LoadButton } from './header-button-load';
+import { SaveButton } from './header-button-save';
 import classes from './header.module.css';
-import { LoadButton } from './load-button';
-import { SaveButton } from './save-button';
 
 export const Header = () => {
   return (
