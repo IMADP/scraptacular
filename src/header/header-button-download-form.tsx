@@ -1,15 +1,15 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { modals } from '@mantine/modals';
-import { useContent } from 'content/content-context';
 
 export interface FileName {
   name: string;
 }
+export interface Props {
+  content: string;
+}
 
-export const DecodeForm = () => {
-  const contentContext = useContent();
-
+export const DownloadForm = ({ content }: Props) => {
   const form = useForm<FileName>({
     initialValues: {
       name: ''
@@ -17,7 +17,7 @@ export const DecodeForm = () => {
   });
 
   const onSubmitHandler = form.onSubmit((fileName: FileName) => {
-    const bytes = atob(contentContext.content);
+    const bytes = atob(content || '');
 
     // write the bytes of the string to an ArrayBuffer
     const ab = new ArrayBuffer(bytes.length);
@@ -46,7 +46,9 @@ export const DecodeForm = () => {
     <form onSubmit={onSubmitHandler}>
       <TextInput label="Name" required mt="md" {...form.getInputProps('name')} />
       <Group justify="flex-end" mt="md">
-        <Button type="submit">Submit</Button>
+        <Button variant="default" type="submit">
+          Submit
+        </Button>
       </Group>
     </form>
   );

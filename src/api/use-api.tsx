@@ -11,7 +11,7 @@ const VITE_S3_PUT_URL = "https://uuyfng1frf.execute-api.us-east-1.amazonaws.com/
 export interface GetContentType {
   error: AxiosError | null;
   isLoading: boolean;
-  getContent: () => Promise<void>;
+  getContent: (callback: (content: string) => void) => Promise<void>;
 }
 
 export const useGetContent = (): GetContentType => {
@@ -20,7 +20,7 @@ export const useGetContent = (): GetContentType => {
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getContent = useCallback(async (): Promise<void> => {
+  const getContent = useCallback(async (callback: (content: string) => void): Promise<void> => {
     setError(null);
     setIsLoading(true);
 
@@ -33,8 +33,8 @@ export const useGetContent = (): GetContentType => {
       const encrypted = s3Response.data;
       const compressed = decryptText(encrypted, keyContext.key.password);
       const content = decompressText(compressed);
-      contentContext.setContent(content);
       setError(null);
+      callback(content);
     }
     catch (err) {
       console.log(err);
@@ -52,16 +52,15 @@ export const useGetContent = (): GetContentType => {
 export interface SaveContentType {
   error: AxiosError | null;
   isLoading: boolean;
-  saveContent: () => Promise<void>;
+  saveContent: (content: string) => Promise<void>;
 }
 
 export const useSaveContent = (): SaveContentType => {
   const keyContext = useKey();
-  const contentContext = useContent();
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const saveContent = useCallback(async (): Promise<void> => {
+  const saveContent = useCallback(async (content: string): Promise<void> => {
     setError(null);
     setIsLoading(true);
 
@@ -70,7 +69,7 @@ export const useSaveContent = (): SaveContentType => {
       const response = await axios.post(VITE_S3_PUT_URL, { name });
       const addS3Url = response.data.url;
 
-      const compressed = compressText(contentContext.content);
+      const compressed = compressText(content);
       const encrypted = encryptText(compressed, keyContext.key.password);
 
       await axios.put(addS3Url, encrypted, {
@@ -87,7 +86,7 @@ export const useSaveContent = (): SaveContentType => {
       setIsLoading(false);
     }
 
-  }, [keyContext, contentContext]);
+  }, [keyContext]);
 
   return { error, isLoading, saveContent };
 }
