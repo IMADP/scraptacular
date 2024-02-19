@@ -22,8 +22,12 @@ export const useGetContent = (): GetContentType => {
     setIsLoading(true);
 
     try {
-      const response = await axios.get<string>("///");
-      const encrypted = response.data;
+      const name = encryptTextDeterministic(keyContext.key.name, keyContext.key.password);
+      const response = await axios.post("https://6o02izy075.execute-api.us-east-1.amazonaws.com/default/getFileFromS3", { name });
+      const getS3Url = response.data.url;
+
+      const s3Response = await axios.get(getS3Url);
+      const encrypted = s3Response.data;
       const compressed = decryptText(encrypted, keyContext.key.password);
       const content = decompressText(compressed);
       contentContext.setContent(content);
@@ -59,9 +63,19 @@ export const useSaveContent = (): SaveContentType => {
     setIsLoading(true);
 
     try {
+      const name = encryptTextDeterministic(keyContext.key.name, keyContext.key.password);
+      const response = await axios.post("https://388poa63rb.execute-api.us-east-1.amazonaws.com/prod/getPresignedUrl", { name });
+      const addS3Url = response.data.url;
+
       const compressed = compressText(contentContext.content);
       const encrypted = encryptText(compressed, keyContext.key.password);
-      await axios.post("/s3", encrypted);
+
+      await axios.put(addS3Url, encrypted, {
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+      });
+
       setError(null);
     } catch (err) {
       console.log(err);
