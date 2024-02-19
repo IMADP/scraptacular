@@ -13,8 +13,8 @@ export const ClearButton = () => {
 
   return (
     <ActionIcon
-      aria-label="Cut"
-      title="Cut"
+      aria-label="Clear"
+      title="Clear"
       variant="default"
       disabled={!keyContext.hasKey}
       onClick={onClick}
