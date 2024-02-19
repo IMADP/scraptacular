@@ -11,7 +11,7 @@ export const Content = () => {
   return (
     <main className={classes.main}>
       <textarea autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
-        className={classes.textarea} placeholder="Start scrappin..." onChange={handleChange} value={contentContext.content}></textarea>
+        className={classes.textarea} placeholder="Start scrappin'..." onChange={handleChange} value={contentContext.content}></textarea>
     </main>
   );
 }
