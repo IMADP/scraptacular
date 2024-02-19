@@ -2,6 +2,8 @@ import { Container, Divider, Group } from '@mantine/core';
 import { KeyButton } from '../key/key-button';
 import { ClearButton } from './header-button-clear';
 import { CutButton } from './header-button-cut';
+import { DecodeButton } from './header-button-decode';
+import { EncodeButton } from './header-button-encode';
 import { LoadButton } from './header-button-load';
 import { SaveButton } from './header-button-save';
 import classes from './header.module.css';
@@ -16,6 +18,9 @@ export const Header = () => {
           <Divider orientation="vertical" />
           <SaveButton />
           <ClearButton />
+          <Divider orientation="vertical" />
+          <EncodeButton />
+          <DecodeButton />
         </Group>
         <Group justify='right' >
           <KeyButton />
