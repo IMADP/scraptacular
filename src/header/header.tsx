@@ -15,8 +15,9 @@ export const Header = () => {
       <Container size="md" className={classes.inner}>
         <Group justify='left' >
           <LoadButton />
-          <SaveButton />
           <CutButton />
+          <Divider orientation="vertical" />
+          <SaveButton />
           <ClearButton />
           <Divider orientation="vertical" />
           <UploadButton />
